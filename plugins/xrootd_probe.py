@@ -19,7 +19,7 @@ import uuid
 import gfal2
 import nap.core
 
-PROBE_VERSION = "v0.0.1"
+PROBE_VERSION = "v0.0.2"
 
 
 # ########################################################################### #
@@ -33,6 +33,8 @@ app.add_argument(
     help="storage operations timeout",
     default=60,
 )
+app.add_argument("-RO", "--read-only", dest="read_only", action="store_true",
+     help="enable read-only tests")
 
 gfal2.set_verbose(gfal2.verbose_level.normal)
 
@@ -95,12 +97,15 @@ def metricLsDir(args, io):
 @app.metric(seq=2, metric_name="Put", passive=True)
 def metricPut(args, io):
     """Copy a local file to the storage path."""
-
+    
     # verify lsdir test succeeded
     results = app.metric_results()
     if results[0][1] != nap.OK:
         io.set_status(nap.WARNING, "lsdir skipped")
         return
+    if args.read_only:
+        io.set_status(nap.OK, "read-only endpoint")
+        return 
 
     # generate source file
     try:
@@ -155,6 +160,10 @@ def metricLs(args, io):
         io.set_status(nap.WARNING, "VOLs skipped")
         return
 
+    if args.read_only:
+        io.set_status(nap.OK, "read-only endpoint")
+        return
+
     if len(_fileDictionary.keys()) == 0:
         io.set_status(nap.WARNING, "No endpoints found to test")
         return
@@ -194,6 +203,10 @@ def metricGet(args, io):
     results = app.metric_results()
     if results[2][1] != nap.OK:
         io.set_status(nap.WARNING, "Get skipped")
+        return
+    
+    if args.read_only:
+        io.set_status(nap.OK, "read-only endpoint")
         return
 
     if len(_fileDictionary.keys()) == 0:
@@ -255,6 +268,10 @@ def metricDel(args, io):
     results = app.metric_results()
     if results[3][1] != nap.OK:
         io.set_status(nap.WARNING, "Del skipped")
+        return
+
+    if args.read_only:
+        io.set_status(nap.OK, "read-only endpoint")
         return
 
     if len(_fileDictionary.keys()) == 0:

@@ -5,7 +5,7 @@
 %define nagios_plugins_dir %{_libdir}/nagios/plugins
 
 Name:       nagios-plugins-xrootd
-Version:    0.0.1
+Version:    0.0.2
 Release:    1%{?dist}
 Summary:    Nagios probes to be run remotely against XRootD endpoints
 License:    MIT
@@ -51,5 +51,7 @@ rm -rf %{buildroot}
 %doc LICENSE README.md
 
 %changelog
+* Mon Aug 14 2023 Andrea Manzi <andrea.manzi@egi.eu> - 0.0.2-0
+- Added read-only option
 * Wed Dec 1 2021 Andrea Manzi <andrea.manzi@egi.eu> - 0.0.1-0
 - first version
