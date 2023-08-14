@@ -33,8 +33,13 @@ app.add_argument(
     help="storage operations timeout",
     default=60,
 )
-app.add_argument("-RO", "--read-only", dest="read_only", action="store_true",
-     help="enable read-only tests")
+app.add_argument(
+    "-RO",
+    "--read-only",
+    dest="read_only",
+    action="store_true",
+    help="enable read-only tests",
+)
 
 gfal2.set_verbose(gfal2.verbose_level.normal)
 
@@ -97,7 +102,7 @@ def metricLsDir(args, io):
 @app.metric(seq=2, metric_name="Put", passive=True)
 def metricPut(args, io):
     """Copy a local file to the storage path."""
-    
+
     # verify lsdir test succeeded
     results = app.metric_results()
     if results[0][1] != nap.OK:
@@ -105,7 +110,7 @@ def metricPut(args, io):
         return
     if args.read_only:
         io.set_status(nap.OK, "read-only endpoint")
-        return 
+        return
 
     # generate source file
     try:
@@ -204,7 +209,7 @@ def metricGet(args, io):
     if results[2][1] != nap.OK:
         io.set_status(nap.WARNING, "Get skipped")
         return
-    
+
     if args.read_only:
         io.set_status(nap.OK, "read-only endpoint")
         return
